@@ -1,0 +1,44 @@
+---
+- name: playbook3
+  hosts: localhost
+
+  vars:
+    os:
+      - macos
+      - ubuntu
+      - rhel
+      - windows
+
+  tasks:
+    - include_vars: vars.yml
+    - name: Test of echo
+      command: echo 'hi'
+      register: contents
+      tags:
+        webserver
+
+    - name: run if previous command runs successfully
+      command: echo 'previous command success'
+      when: contents.stdout.find('hi') != -1
+
+    - name: run with contents
+      command: echo 'Good'
+      when: contents.changed == true
+      tags:
+        webserver
+
+    - name: run loop
+      command: echo {{ item }}
+      loop:
+        - Jan
+        - Feb
+        - Mar
+
+    - name: run with another file
+      command: echo {{ item.name }}
+      loop: '{{ packages }}'
+      when: item.required == true
+
+    - name: run with global variable
+      command: echo {{ item }}
+      loop: '{{ os }}'

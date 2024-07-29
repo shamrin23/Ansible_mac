@@ -1,0 +1,12 @@
+package_name: 'java'
+
+packages:
+  - name: python
+    required: true
+  - name: java
+    required: true
+  - name: ruby
+    required: false
+  - name: ngnix
+    required: true
+

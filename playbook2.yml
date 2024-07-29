@@ -1,0 +1,49 @@
+---
+- name: playbook2
+  hosts: localhost
+
+  vars:
+    users:
+      - nikon
+      - sony
+      - panasonic
+      - cannon
+
+  tasks:
+    - include_vars: vars.yml
+    - name: run echo command
+      command: echo 'hi'
+      register: contents
+      tags:
+        webservers
+
+    - name: run if previous command run successful
+      command: echo 'successful'
+      when: contents.stdout.find('hi') != -1
+
+    - name: run if change is equal to true
+      command: echo 'thank god it worked'
+      when: contents.changed == true
+
+    - name: run tag
+      command: echo 'Alhamdulilah'
+      tags:
+        webservers
+
+    - name: trying loop
+      command: echo {{ item }}
+      loop:
+        - Dad
+        - Son
+        - Mom
+        - Daughter
+
+    - name: trying global variable
+      command: echo {{ item }}
+      loop: '{{ users }}'
+
+
+    - name: calling from vars
+      command: echo {{ item.name }}
+      when: item.required == true
+      loop: '{{ packages }}'

@@ -1,0 +1,35 @@
+---
+- name: creating my playbook
+  hosts: localhost
+
+  vars:
+    server_name: '281.265.255.65'
+#    package_name: 'python'
+
+  tasks:
+    - include_vars: vars.yml
+    - name: Running shell script
+      shell: echo 'Hello world'
+
+    - name: Testing date command
+      command: date
+
+    - name: List of files
+      command: ls -lrt
+      args:
+        chdir: /Users/shamrin/Devops/maven
+
+    - name: line in module
+      lineinfile:
+        path: test.txt
+        line: echo 'server 10.25.65.47'
+
+    - name: global variable
+      lineinfile:
+        path: test.txt
+        line: '{{ server_name }}'
+
+    - name: calling vars.yml
+      command: echo {{ package_name }}
+
+

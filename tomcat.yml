@@ -1,0 +1,57 @@
+---
+- name: tomcat installation
+  hosts: localhost
+
+  tasks:
+    - name: apt update
+      apt:
+        upgrade: yes
+        cache_update: yes
+
+    - name: install java version 11
+      apt:
+        name: openjdk-11-jdk
+        state: present
+        install_recommends: yes
+
+    - name: create user tomcat
+      user:
+        name: tomcat
+        state: present
+        shell: /sbin/nologin
+        home: /opt/tomcat
+        create_home: no
+
+    - name: create user group
+      group:
+        name: tomcat
+
+    - name: Ensure Tomcat directories are owned by tomcat
+      file:
+        path: opt/tomcat
+        state: directory
+        owner: tomcat
+        group: tomcat
+        mode: '0755'
+
+    - name: Ensure Tomcat installation files are owned by tomcat
+      file:
+        path: /opt/tomcat
+        recurse: yes
+        owner: tomcat
+        group: tomcat
+        mode: '0755'
+
+    - name: install and unarchive tomcat
+      unarchive:
+        src: https://downloads.apache.org/tomcat/tomcat-9/v9.0.91/bin/apache-tomcat-9.0.91.tar.gz
+        dest: /opt/tomcat
+        remote_src: yes
+
+    - name: start tomcat
+      command: sh /opt/tomcat/apache-tomcat-9.0.91/bin/startup.sh
+
+    - name: allow tcp connection
+      command: sudo ufw allow 8080/tcp
+
+
